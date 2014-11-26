@@ -87,7 +87,7 @@ quotes = [
 
 @commands('hackers','dade')
 @rule(r'(hack|dade|joey|jennifer|burn|cereal|nikon|phreak|phantom|nynex|plague)')
-@example('hackers')
+@example('hackers - random quote from our favourite movie')
 def random_hackers_quote(bot, trigger):
 	bot.say(random.choice(quotes))
 

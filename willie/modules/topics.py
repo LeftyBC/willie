@@ -84,8 +84,8 @@ def periodic_topic_change(bot):
 
 
 
+@example("addtopic yay my new topic - adds 'yay my new topic' to the bot's list of random topics")
 @commands("addtopic")
-@example("addtopic yay my new topic")
 def add_topic(bot, trigger):
 	with _topic_lock:
 		db = get_db(trigger.sender)
@@ -96,7 +96,7 @@ def add_topic(bot, trigger):
 		db.close()
 
 
-@example("topics")
+@example("topics - shows which topics are currently in the bot's list")
 @commands("topics")
 def topics(bot, trigger):
 	with _topic_lock:
@@ -118,7 +118,7 @@ def topics(bot, trigger):
 		db.close()
 
 
-@example("randomtopic")
+@example("randomtopic - sets a random topic from the list")
 @commands("randomtopic")
 def random_topic(bot, trigger):
 	with _topic_lock:
