@@ -23,3 +23,8 @@ willie.wiki/*
 .settings
 .project
 .pydevproject
+
+# Misc topic files
+*_topics
+topics
+topic_change_timestamps
