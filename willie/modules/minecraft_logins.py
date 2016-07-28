@@ -23,10 +23,11 @@ def poll_minecraft(bot):
 	try:
 		minecraft_data = json.loads(web.get(url))
 		players = [player['name'] for player in minecraft_data['players']]
+		return players
 	except Exception as e:
-		return ['Unable to enumerate players: %s' % e]
+		print "Unable to enumerate players: %s" % e
+		return None
 
-	return players
 
 def configure(config):
 	if config.option('Monitor a minecraft server for logins/logouts?',False):
@@ -51,6 +52,9 @@ def check_for_changed_players(bot):
 
 	players = poll_minecraft(bot)
 
+	if players is None:
+		return
+
 	last_onlines = []
 	try:
 		last_onlines = bot.memory['last_onlines']
@@ -59,23 +63,25 @@ def check_for_changed_players(bot):
 		last_onlines = players
 
 	for pname in players:
-		if pname in last_onlines:
-			# we've seen this user before
-			pass
-		else:
-			# this user is newly joined
-			for channel in channels:
-				bot.msg(channel, "[minecraft] %s joined the server" % pname)
+		if len(pname) > 0:
+			if pname in last_onlines:
+				# we've seen this user before
+				pass
+			else:
+				# this user is newly joined
+				for channel in channels:
+					bot.msg(channel, "[minecraft] %s joined the server" % pname)
 
 	
 	for pname in last_onlines:
-		if pname in players:
-			# this player is currently online
-			pass
-		else:
-			# this player is no longer online
-			for channel in channels:
-				bot.msg(channel, "[minecraft] %s quit the server" % pname)
+		if len(pname) > 0:
+			if pname in players:
+				# this player is currently online
+				pass
+			else:
+				# this player is no longer online
+				for channel in channels:
+					bot.msg(channel, "[minecraft] %s quit the server" % pname)
 
 	bot.memory['last_onlines'] = players
 
@@ -86,10 +92,13 @@ def who_is_online(bot, trigger):
 
 	result = poll_minecraft(bot)
 
-	onlines = "[minecraft] Players currently online: %s" % ", ".join(result)
-
 	if len(result) == 0:
 		onlines = "[minecraft] Nobody is currently online."
+	elif result is None:
+		onlines = "[minecraft] Couldn't fetch the list of online users. Try again later."
+	else
+		onlines = "[minecraft] Players currently online: %s" % ", ".join(result)
+
 
 	bot.say(onlines)
 
